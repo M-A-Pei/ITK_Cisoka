@@ -43,13 +43,13 @@
                         <tr class="table-success">
                             <td>{{this.nama}}</td>
                             <td>sudah bayar</td>
-                            <td><a class="btn btn-danger">cancel</a></td>
+                            <td><a href="bimbel/cancel/{{this.id}}" class="btn btn-danger">cancel</a></td>
                         </tr>
                     {{else}}
                         <tr class="table-danger">
                             <td>{{this.nama}}</td>
                             <td>belum bayar</td>
-                            <td><a href="bimbel/bayar/{{this.id}}" class="btn btn-success">bayar</a></td>
+                            <td><a href="/bimbel/bayar/{{this.id}}" class="btn btn-success">bayar</a></td>
                         </tr>
                     {{/if}}
                 {{/each}}
@@ -58,17 +58,20 @@
         </div>
       </div>
 
-      <div class="row d-flex justify-content-center">
-        <div class="col-lg-6">
-            <form action="/bimbel" method="POST">
-                <div class="input-group mb-3">
-                    <input type="text" name="nama" class="form-control" placeholder="Nama">
-                    <span class="input-group-text"><button type="submit" class="btn btn-warning">tambah murid baru</button></span>
-                </div>
-                
-            </form>
+      {{#if currentDate}}
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-6">
+                <form action="/bimbel" method="POST">
+                    <div class="input-group mb-3">
+                        <input required type="text" name="nama" class="form-control" placeholder="Nama">
+                        <span class="input-group-text"><button type="submit" class="btn btn-warning">tambah murid baru</button></span>
+                    </div>
+                    
+                </form>
+            </div>
         </div>
-      </div>
+      {{/if}}
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>

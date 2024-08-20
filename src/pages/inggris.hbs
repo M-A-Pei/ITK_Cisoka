@@ -6,17 +6,72 @@
     <title>{{title}}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/0412fad157.js" crossorigin="anonymous"></script>
+    <script>
+        const handleDate = ()=>{
+            const x = document.getElementById('dateInput').value
+            window.location.href = `/inggris/${x}`;
+        }
+    </script>
   </head>
   <body>
    {{>navbar}}
-
+    <div class="position-absolute">
+        <input onchange={handleDate()} type="month" class="input" id="dateInput" value="{{tahunDanBulan}}">
+    </div>
     <div class="container">
       <div class="row d-flex justify-content-center">
-        <div class="col-6 d-flex flex-column border border-dark p-3 mt-5">
-          
+        <div class="col-lg-7 d-flex flex-column align-items-center mt-5">
+        <h1>inggris</h1>
+        <h5>{{tahunDanBulan}}</h5>
+          <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Nama Peserta</th>
+                    <th scope="col">status</th>
+                    <th scope="col">action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#unless data}}
+                    <tr>
+                        <td colspan="3" class="table-danger text-center fs-2">tidak ada peserta di bulan ini</td>
+                    </tr>
+                {{/unless}}
+
+                {{#each data}}
+                    {{#if this.sudahBayar}}
+                        <tr class="table-success">
+                            <td>{{this.nama}}</td>
+                            <td>sudah bayar</td>
+                            <td><a href="inggris/cancel/{{this.id}}" class="btn btn-danger">cancel</a></td>
+                        </tr>
+                    {{else}}
+                        <tr class="table-danger">
+                            <td>{{this.nama}}</td>
+                            <td>belum bayar</td>
+                            <td><a href="inggris/bayar/{{this.id}}" class="btn btn-success">bayar</a></td>
+                        </tr>
+                    {{/if}}
+                {{/each}}
+            </tbody>
+            </table>
         </div>
       </div>
-    </div>
+
+      {{#if currentDate}}
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-6">
+                <form action="/inggris" method="POST">
+                    <div class="input-group mb-3">
+                        <input required type="text" name="nama" class="form-control" placeholder="Nama">
+                        <span class="input-group-text"><button type="submit" class="btn btn-warning">tambah murid baru</button></span>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+      {{/if}}
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>

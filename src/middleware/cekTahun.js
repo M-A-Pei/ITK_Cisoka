@@ -25,15 +25,75 @@ module.exports = async function cekTahun(){
         }
     })
 
+    let bulanSekarang
     if(!cekBulan){
-        await db.bulan.create({
+        bulanSekarang = await db.bulan.create({
             data: {
                 bulan: bulan[date.getMonth()],
                 tahunId: cekTahun.id,
-                total: 0
+                total: 0,
             }
         })
-    }     
 
-    return {tahun: cekTahun, bulan: cekBulan}
+        const pesertaBimbelDulu = await db.pesertaBimbel.findMany({
+            where: {
+                bulanId : bulanSekarang.id - 1
+            }
+        })
+
+        if(pesertaBimbelDulu.length != 0){
+            pesertaBimbelDulu.forEach((e, i)=>{
+                pesertaBimbelDulu[i].sudahBayar = false
+                pesertaBimbelDulu[i].bulanId = bulanSekarang.id
+                delete pesertaBimbelDulu[i].id
+            })
+
+            await db.pesertaBimbel.createMany({
+                data: pesertaBimbelDulu
+            })
+            
+        }
+
+        const pesertaKomputerDulu = await db.pesertaKomputer.findMany({
+            where: {
+                bulanId : bulanSekarang.id - 1
+            }
+        })
+
+        if(pesertaKomputerDulu.length != 0){
+            pesertaKomputerDulu.forEach((e, i)=>{
+                pesertaKomputerDulu[i].sudahBayar = false
+                pesertaKomputerDulu[i].bulanId = bulanSekarang.id
+                delete pesertaKomputerDulu[i].id
+            })
+
+            await db.pesertaKomputer.createMany({
+                data: pesertaKomputerDulu
+            })
+            
+        }
+
+        const pesertaInggrisDulu = await db.pesertaInggris.findMany({
+            where: {
+                bulanId : bulanSekarang.id - 1
+            }
+        })
+
+        if(pesertaInggrisDulu.length != 0){
+            pesertaInggrisDulu.forEach((e, i)=>{
+                pesertaInggrisDulu[i].sudahBayar = false
+                pesertaInggrisDulu[i].bulanId = bulanSekarang.id
+                delete pesertaInggrisDulu[i].id
+            })
+
+            await db.pesertaInggris.createMany({
+                data: pesertaInggrisDulu
+            })
+            
+        }
+    }
+
+    
+
+    return {tahun: cekTahun, bulan: cekBulan || bulanSekarang}
 }

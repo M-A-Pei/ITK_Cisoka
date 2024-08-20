@@ -7,7 +7,7 @@ const route = router()
 
 route.get("/:date?", async(req, res)=>{
     const tanggal = req.params.date
-    if(!tanggal){
+    if(!tanggal){                               //kalo gaada param tanggal artinya lakuin cektahun buat ngedapetin bulan dan tahun sekarang, juga klo gaada dibuatin
         cekTahun().then(async(value)=>{
             const data = await db.pesertaBimbel.findMany({
                 where: {
@@ -15,15 +15,16 @@ route.get("/:date?", async(req, res)=>{
                 }
             })
     
-            const date = new Date()
+            const date = new Date()             //ambil bulan dan tahun buat inputan tanggal
             const tahun = date.getFullYear()
-            const bulan = "0" + (date.getMonth() + 1)
+            let bulan = (date.getMonth() + 1)
+            if(bulan < 10) bulan = "0" + bulan
             const tahunDanBulan = tahun + "-" + bulan
     
-            res.render("bimbel", {data, tahunDanBulan})
+            res.render("bimbel", {data, tahunDanBulan, currentDate: true})
         })
     }else{
-        const tahun = tanggal.split("-")[0]
+        const tahun = tanggal.split("-")[0]               //klo param tanggal ada kita render catetan sesuai dengan bulan dan tahun yang dipilih
         const bulan = BULAN[tanggal.split("-")[1]-1]
 
 
@@ -38,10 +39,17 @@ route.get("/:date?", async(req, res)=>{
                 }
             }
         })
+        const date = new Date()                                     //ambil bulan dan tahun buat inputan tanggal
+        const tahunSekarang = date.getFullYear()
+        let bulanSekarang = (date.getMonth() + 1)
+        if(bulanSekarang < 10) bulanSekarang = "0" + bulanSekarang
+        const tahunDanBulanSekarang = tahunSekarang + "-" + bulanSekarang
 
         const tahunDanBulan = tanggal
+        let currentDate
+        if(tahunDanBulan == tahunDanBulanSekarang) currentDate = true //cek klo tanggal yang dipilih itu bulan sekarang atau bukan
 
-        res.render("bimbel", {data, tahunDanBulan})
+        res.render("bimbel", {data, tahunDanBulan, currentDate})
     }
     
 })
@@ -68,6 +76,19 @@ route.get("/bayar/:bimbelId", async (req, res)=>{
         },
         data: {
             sudahBayar: true
+        }
+    })
+    res.redirect("/bimbel")
+})
+
+route.get("/cancel/:bimbelId", async (req, res)=>{
+    const {bimbelId} = req.params
+    await db.pesertaBimbel.update({
+        where: {
+            id: Number(bimbelId)
+        },
+        data: {
+            sudahBayar: false
         }
     })
     res.redirect("/bimbel")

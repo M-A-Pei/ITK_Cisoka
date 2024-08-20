@@ -2,14 +2,11 @@ const router = require("express").Router
 const bimbelRoutes = require("./bimbel")
 const komputerRoutes = require("./komputer")
 const inggrisRoutes = require("./inggris")
-const db = require("../libs/db")
-const cekTahun = require("../middleware/cekTahun")
+const bulananRoutes = require("./bulanan")
 
 const route = router()
 
-route.get("/", async(req, res)=>{
-    cekTahun().then(res.render("bulanan"))
-})
+route.get("/", bulananRoutes)
 route.use("/bimbel", bimbelRoutes)
 route.use("/komputer", komputerRoutes)
 route.use("/inggris", inggrisRoutes)
