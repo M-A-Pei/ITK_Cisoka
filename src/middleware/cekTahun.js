@@ -1,23 +1,10 @@
 const db = require("../libs/db")
+const bulan = require("../static/BULAN")
 
 module.exports = async function cekTahun(){
-    const bulan = [  //bagian ini dan kebawahnya buat ngecek klo tahun dan bulan ini udh ada di database atau blm, kalau blm buat :D
-        "januari",
-        "februari",
-        "maret",
-        "april",
-        "mei",
-        "juni",
-        "juli",
-        "agustus",
-        "september",
-        "oktober",
-        "november",
-        "desember"
-    ]
 
     const date = new Date()
-    const cekTahun = await db.tahun.findFirst({
+    const cekTahun = await db.tahun.findFirst({ //bagian ini dan kebawahnya buat ngecek klo tahun dan bulan ini udh ada di database atau blm, kalau blm buat :D
         where: {
             tahun: String(date.getFullYear())
         }
