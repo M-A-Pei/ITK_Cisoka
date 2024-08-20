@@ -12,3 +12,50 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model tahun {
+  id          Int        @id @default(autoincrement())
+  tahun       String
+  bulan       bulan[]
+}
+
+model bulan {
+  id          Int        @id @default(autoincrement())
+  bulan       String
+  total       Int
+
+  tahunId     Int
+  tahun       tahun      @relation(fields: [tahunId], references: [id])
+
+  
+  pesertaBimbel pesertaBimbel[]
+  pesertaKomputer pesertaKomputer[]
+  pesertaInggris pesertaInggris[]
+}
+
+model pesertaBimbel{
+  id          Int        @id @default(autoincrement())
+  nama        String
+  sudahBayar  Boolean
+
+  bulanId     Int
+  bulan       bulan     @relation(fields: [bulanId], references: [id])
+}
+
+model pesertaInggris{
+  id          Int        @id @default(autoincrement())
+  nama        String
+  sudahBayar  Boolean
+
+  bulanId     Int
+  bulan       bulan     @relation(fields: [bulanId], references: [id])
+}
+
+model pesertaKomputer{
+  id          Int        @id @default(autoincrement())
+  nama        String
+  sudahBayar  Boolean
+
+  bulanId     Int
+  bulan       bulan     @relation(fields: [bulanId], references: [id])
+}
