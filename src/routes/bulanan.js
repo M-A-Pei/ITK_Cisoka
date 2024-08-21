@@ -6,10 +6,7 @@ const BULAN = require("../static/BULAN")
 const route = router()
 
 route.get("/:date?", async(req, res)=>{
-    cekTahun().then(()=>loadBulanan(req, res))
-})
-
-async function loadBulanan(req, res){
+    await cekTahun()
     const {date} = req.params
     if(!date){
         const date = new Date()        
@@ -18,18 +15,12 @@ async function loadBulanan(req, res){
         if(bulan < 10) bulan = "0" + bulan
         const tahunDanBulan = tahun + "-" + bulan
 
-        const x = await db.tahun.findFirst({
-            where: {
-                tahun: String(tahun)
-            },
-            select: {id: true}
-        })
-
-        const tahunId = x.id
-
         const y = await db.bulan.findFirst({
             where: {
-                tahunId, bulan: BULAN[date.getMonth()]
+                tahun: {
+                    tahun: String(tahun)
+                },
+                bulan: BULAN[bulan]
             },
             select: {
                 total: true,
@@ -67,18 +58,12 @@ async function loadBulanan(req, res){
     }else{
         const tahun = date.split("-")[0]
         const bulan = date.split("-")[1]-1
-        const x = await db.tahun.findFirst({
-            where: {
-                tahun: String(tahun)
-            },
-            select: {id: true}
-        })
-
-        const tahunId = x.id
 
         const y = await db.bulan.findFirst({
             where: {
-                tahunId, bulan: BULAN[bulan]
+                tahun: {
+                    tahun: String(tahun)
+                }, bulan: BULAN[bulan]
             },
             select: {
                 total: true
@@ -93,6 +78,10 @@ async function loadBulanan(req, res){
 
         res.render("bulanan", {tahunDanBulan: date, total})
     }
+})
+
+async function loadBulanan(req, res){
+    
 }
 
 module.exports = route
