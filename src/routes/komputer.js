@@ -70,7 +70,7 @@ route.post("/", async (req, res)=>{
 
 route.get("/bayar/:komputerId", async (req, res)=>{
     const {komputerId} = req.params
-    await db.pesertaKomputer.update({
+    const x = await db.pesertaKomputer.update({
         where: {
             id: Number(komputerId)
         },
@@ -78,17 +78,53 @@ route.get("/bayar/:komputerId", async (req, res)=>{
             sudahBayar: true
         }
     })
+
+    const y = await db.bulan.findFirst({
+        where: {
+            id: x.bulanId
+        },
+        select: {
+            total: true
+        }
+    })
+
+    await db.bulan.update({
+        where: {
+            id: x.bulanId
+        },
+        data: {
+            total: y.total + 150000
+        }
+    })
     res.redirect("/komputer")
 })
 
 route.get("/cancel/:komputerId", async (req, res)=>{
     const {komputerId} = req.params
-    await db.pesertaKomputer.update({
+    const x = await db.pesertaKomputer.update({
         where: {
             id: Number(komputerId)
         },
         data: {
             sudahBayar: false
+        }
+    })
+
+    const y = await db.bulan.findFirst({
+        where: {
+            id: x.bulanId
+        },
+        select: {
+            total: true
+        }
+    })
+
+    await db.bulan.update({
+        where: {
+            id: x.bulanId
+        },
+        data: {
+            total: y.total - 150000
         }
     })
     res.redirect("/komputer")

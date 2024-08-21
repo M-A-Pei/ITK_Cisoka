@@ -70,7 +70,7 @@ route.post("/", async (req, res)=>{
 
 route.get("/bayar/:inggrisId", async (req, res)=>{
     const {inggrisId} = req.params
-    await db.pesertaInggris.update({
+    const x = await db.pesertaInggris.update({
         where: {
             id: Number(inggrisId)
         },
@@ -78,17 +78,53 @@ route.get("/bayar/:inggrisId", async (req, res)=>{
             sudahBayar: true
         }
     })
+
+    const y = await db.bulan.findFirst({
+        where: {
+            id: x.bulanId
+        },
+        select: {
+            total: true
+        }
+    })
+
+    await db.bulan.update({
+        where: {
+            id: x.bulanId
+        },
+        data: {
+            total: y.total + 150000
+        }
+    })
     res.redirect("/inggris")
 })
 
 route.get("/cancel/:inggrisId", async (req, res)=>{
     const {inggrisId} = req.params
-    await db.pesertaInggris.update({
+    const x = await db.pesertaInggris.update({
         where: {
             id: Number(inggrisId)
         },
         data: {
             sudahBayar: false
+        }
+    })
+
+    const y = await db.bulan.findFirst({
+        where: {
+            id: x.bulanId
+        },
+        select: {
+            total: true
+        }
+    })
+
+    await db.bulan.update({
+        where: {
+            id: x.bulanId
+        },
+        data: {
+            total: y.total - 150000
         }
     })
     res.redirect("/inggris")

@@ -10,26 +10,68 @@
       const handleDate = ()=>{
             const x = document.getElementById('dateInput').value
             window.location.href = `/${x}`;
-        }
+      }
     </script>
   </head>
   <body>
    {{>navbar}}
     <div class="position-absolute">
-        <input onchange={handleDate()} type="month" class="input" id="dateInput" value="2024-08">
+        <input onchange={handleDate()} type="month" class="input" id="dateInput" value="{{tahunDanBulan}}">
     </div>
     <div class="container">
       <div class="row d-flex justify-content-center">
+        {{#if tidakAda}}
         <div class="col-6 d-flex flex-column border border-dark p-3 mt-5">
-          <h1>hasil bulan agustus</h1>
-          <small>thalya (inggris) = 100.000</small>
-          <small>thalya (inggris) = 100.000</small>
-          <small>thalya (inggris) = 100.000</small>
-          <small>thalya (inggris) = 100.000</small>
-          <small>thalya (inggris) = 100.000</small>
-          <small> ____________________________  +</small>
-          </small>                    1000000000 </small>
+          <h1>bulan ini tidak ada</h1>
         </div>
+        {{else}}
+        <div class="col-6 d-flex flex-column border border-dark p-3 mt-5">
+          <h2 class="text-center">total penghasilan </h2>
+          <h5 class="text-center">{{tahunDanBulan}}</h5>
+          <table border="0" style="width: 100%;">
+            <tr>
+              <td class="border-bottom">
+                <b>(bimbel)</b>
+              </td>
+            </tr>
+          
+          {{#each listBimbel}}
+              <tr>
+                <td>{{this.nama}}</td>
+                <td>: 150.000</td>
+              </tr>  
+          {{/each}}
+            <tr>
+              <td class="border-bottom">
+                <b>(komputer)</b>
+              </td>
+            </tr>
+          {{#each listKomputer}}
+              <tr>
+                <td>{{this.nama}}</td>
+                <td>: 150.000</td>
+              </tr>  
+          {{/each}}
+            <tr>
+              <td class="border-bottom">
+                <b>(inggris)</b>
+              </td>
+            </tr>
+          {{#each listInggris}}
+              <tr>
+                <td>{{this.nama}}</td>
+                <td>: 150.000</td>
+              </tr>  
+          {{/each}}
+              <tr class="border border-secondary"></tr>
+              <tr>
+                <td>Total</td>
+                <td><b id="total" class="text-end">Rp. {{total}}</b></td>
+              </tr>
+          </table>
+        </div>
+        {{/if}}
+        
       </div>
     </div>
 

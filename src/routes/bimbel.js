@@ -70,7 +70,7 @@ route.post("/", async (req, res)=>{
 
 route.get("/bayar/:bimbelId", async (req, res)=>{
     const {bimbelId} = req.params
-    await db.pesertaBimbel.update({
+    const x = await db.pesertaBimbel.update({
         where: {
             id: Number(bimbelId)
         },
@@ -78,17 +78,53 @@ route.get("/bayar/:bimbelId", async (req, res)=>{
             sudahBayar: true
         }
     })
+    
+    const y = await db.bulan.findFirst({
+        where: {
+            id: x.bulanId
+        },
+        select: {
+            total: true
+        }
+    })
+
+    await db.bulan.update({
+        where: {
+            id: x.bulanId
+        },
+        data: {
+            total: y.total + 150000
+        }
+    })
     res.redirect("/bimbel")
 })
 
 route.get("/cancel/:bimbelId", async (req, res)=>{
     const {bimbelId} = req.params
-    await db.pesertaBimbel.update({
+    const x = await db.pesertaBimbel.update({
         where: {
             id: Number(bimbelId)
         },
         data: {
             sudahBayar: false
+        }
+    })
+
+    const y = await db.bulan.findFirst({
+        where: {
+            id: x.bulanId
+        },
+        select: {
+            total: true
+        }
+    })
+
+    await db.bulan.update({
+        where: {
+            id: x.bulanId
+        },
+        data: {
+            total: y.total - 150000
         }
     })
     res.redirect("/bimbel")
