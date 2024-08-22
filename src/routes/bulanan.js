@@ -7,6 +7,11 @@ const {hargaBulanBimbel, hargaBulanKomputer, hargaBulanInggris} = require("../st
 const route = router()
 
 route.get("/:date?", async(req, res)=>{
+    const isLogin = req.session.isLogin
+    console.log(isLogin)
+    if(!isLogin){
+        return res.redirect("/auth/login")
+    }
     await cekTahun()
     const {date} = req.params
     if(!date){
@@ -70,7 +75,7 @@ async function loadPage(bulan, tahun, res){
     const total = response.total
 
     const x = (listInggris.length * hargaBulanInggris) + (listBimbel.length * hargaBulanBimbel) + (listKomputer.length * hargaBulanKomputer)
-    const listPendaftaran = (total - x)
+    const listPendaftaran = (total - x) == total? 0 : (total - x)
     res.render("bulanan", {tahunDanBulan, total, listBimbel, listInggris, listKomputer, hargaBulanBimbel, hargaBulanInggris, hargaBulanKomputer, listPendaftaran})
 }
 

@@ -7,6 +7,11 @@ const {hargaBulanBimbel, hargaDaftarBimbel} = require("../static/HARGA")
 const route = router()
 
 route.get("/:date?", async(req, res)=>{
+    const isLogin = req.session.isLogin
+    console.log(isLogin)
+    if(!isLogin){
+        return res.redirect("/auth/login")
+    }
     const tanggal = req.params.date
     if(!tanggal){                               //kalo gaada param tanggal artinya lakuin cektahun buat ngedapetin bulan dan tahun sekarang, juga klo gaada dibuatin
         cekTahun().then(async(value)=>{

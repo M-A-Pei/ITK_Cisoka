@@ -7,6 +7,11 @@ const {hargaBulanKomputer, hargaDaftarKomputer} = require("../static/HARGA")
 const route = router()
 
 route.get("/:date?", async(req, res)=>{
+    const isLogin = req.session.isLogin
+    console.log(isLogin)
+    if(!isLogin){
+        return res.redirect("/auth/login")
+    }
     const tanggal = req.params.date
     if(!tanggal){
         cekTahun().then(async(value)=>{
