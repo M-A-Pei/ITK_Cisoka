@@ -2,6 +2,7 @@ const router = require("express").Router
 const db = require("../libs/db")
 const cekTahun = require("../middleware/cekTahun")
 const BULAN = require("../static/BULAN")
+const {hargaBulanBimbel, hargaDaftarBimbel} = require("../static/HARGA")
 
 const route = router()
 
@@ -95,7 +96,7 @@ route.get("/bayar/:bimbelId", async (req, res)=>{
             id: x.bulanId
         },
         data: {
-            total: y.total + 100000
+            total: y.total + hargaBulanBimbel
         }
     })
     res.redirect("/bimbel")
@@ -127,7 +128,7 @@ route.get("/cancel/:bimbelId", async (req, res)=>{
             id: x.bulanId
         },
         data: {
-            total: y.total - 100000
+            total: y.total - hargaBulanBimbel
         }
     })
     res.redirect("/bimbel")
@@ -162,7 +163,7 @@ route.get("/pendaftaran/:bimbelId", async (req, res)=>{
             id: x.bulanId
         },
         data: {
-            total: y.total + 150000
+            total: y.total + hargaDaftarBimbel
         }
     })
     res.redirect("/bimbel")

@@ -2,6 +2,7 @@ const router = require("express").Router
 const cekTahun = require("../middleware/cekTahun")
 const db = require("../libs/db")
 const BULAN = require("../static/BULAN")
+const {hargaBulanBimbel, hargaBulanKomputer, hargaBulanInggris} = require("../static/HARGA")
 
 const route = router()
 
@@ -26,7 +27,7 @@ route.get("/:date?", async(req, res)=>{
 async function loadPage(bulan, tahun, res){
     const tahunDanBulan = tahun + "-" + bulan
     console.log(tahunDanBulan)
-    const y = await db.bulan.findFirst({
+    const response = await db.bulan.findFirst({
         where: {
             tahun: {
                 tahun: String(tahun)
@@ -38,11 +39,11 @@ async function loadPage(bulan, tahun, res){
         }
     })
 
-    if(!y){
+    if(!response){
         return res.render("bulanan", {tahunDanBulan, tidakAda: true})
     }
 
-    const bulanId = y.id
+    const bulanId = response.id
     
 
     const listBimbel = await db.pesertaBimbel.findMany({
@@ -66,9 +67,11 @@ async function loadPage(bulan, tahun, res){
         }
     })
 
-    const total = y.total
+    const total = response.total
 
-    res.render("bulanan", {tahunDanBulan, total, listBimbel, listInggris, listKomputer})
+    const x = (listInggris.length * hargaBulanInggris) + (listBimbel.length * hargaBulanBimbel) + (listKomputer.length * hargaBulanKomputer)
+    const listPendaftaran = (total - x)
+    res.render("bulanan", {tahunDanBulan, total, listBimbel, listInggris, listKomputer, hargaBulanBimbel, hargaBulanInggris, hargaBulanKomputer, listPendaftaran})
 }
 
 module.exports = route

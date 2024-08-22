@@ -18,7 +18,9 @@
     <div class="position-absolute">
         <input onchange={handleDate()} type="month" class="input" id="dateInput" value="{{tahunDanBulan}}">
     </div>
+
     <div class="container">
+      
       <div class="row d-flex justify-content-center mx-1">
         {{#if tidakAda}}
         <div class="col-6 d-flex flex-column border border-dark p-3 mt-5">
@@ -43,7 +45,7 @@
           {{#each listBimbel}}
               <tr>
                 <td>{{this.nama}} <small class="text-secondary">{{this.tanggalBayarBulanan}}</small></td>
-                <td>: 100.000</td>
+                <td>: {{../hargaBulanBimbel}}</td>
               </tr>  
           {{/each}}
 
@@ -58,7 +60,7 @@
           {{#each listKomputer}}
               <tr>
                 <td>{{this.nama}} <small class="text-secondary">{{this.tanggalBayarBulanan}}</small></td>
-                <td>: 100.000</td>
+                <td>: {{../hargaBulanKomputer}}</td>
               </tr>  
           {{/each}}
           {{#if listInggris}}
@@ -71,18 +73,23 @@
           {{#each listInggris}}
               <tr>
                 <td>{{this.nama}} <small class="text-secondary">{{this.tanggalBayarBulanan}}</small></td>
-                <td>: 100.000</td>
+                <td>: {{../hargaBulanInggris}}</td>
               </tr>  
           {{/each}}
+                <tr>
+                <td>total pendaftaran</td>
+                <td>: {{listPendaftaran}}</td>
+              </tr>  
               <tr class="border border-secondary"></tr>
+          {{#if total}}
               <tr>
                 <td>Total</td>
                 <td><b id="total" class="text-end">Rp. {{total}}</b></td>
               </tr>
+          {{/if}}
           </table>
         </div>
         {{/if}}
-        
       </div>
     </div>
 
