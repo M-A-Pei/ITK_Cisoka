@@ -60,7 +60,6 @@ route.post("/", async (req, res)=>{
         await db.pesertaKomputer.create({
             data: {
                 nama,
-                sudahBayar: false,
                 bulanId: value.bulan.id
             }
         })
@@ -70,12 +69,83 @@ route.post("/", async (req, res)=>{
 
 route.get("/bayar/:komputerId", async (req, res)=>{
     const {komputerId} = req.params
+    const date = new Date()
+    const tanggal = date.getDate()
+    const bulan = BULAN[date.getMonth()]
     const x = await db.pesertaKomputer.update({
         where: {
             id: Number(komputerId)
         },
         data: {
-            sudahBayar: true
+            sudahBayar: true,
+            tanggalBayarBulanan: tanggal + " " + bulan
+        }
+    })
+
+    const y = await db.bulan.findFirst({
+        where: {
+            id: x.bulanId
+        },
+        select: {
+            total: true
+        }
+    })
+
+    await db.bulan.update({
+        where: {
+            id: x.bulanId
+        },
+        data: {
+            total: y.total + 100000
+        }
+    })
+    res.redirect("/komputer")
+})
+
+route.get("/cancel/:komputerId", async (req, res)=>{
+    const {komputerId} = req.params
+    const x = await db.pesertaKomputer.update({
+        where: {
+            id: Number(komputerId)
+        },
+        data: {
+            sudahBayar: false,
+            tanggalBayarBulanan: ""
+        }
+    })
+
+    const y = await db.bulan.findFirst({
+        where: {
+            id: x.bulanId
+        },
+        select: {
+            total: true
+        }
+    })
+
+    await db.bulan.update({
+        where: {
+            id: x.bulanId
+        },
+        data: {
+            total: y.total - 100000
+        }
+    })
+    res.redirect("/komputer")
+})
+
+route.get("/pendaftaran/:komputerId", async (req, res)=>{
+    const {komputerId} = req.params
+    const date = new Date()
+    const tanggal = date.getDate()
+    const bulan = BULAN[date.getMonth()]
+    const x = await db.pesertaKomputer.update({
+        where: {
+            id: Number(komputerId)
+        },
+        data: {
+            pendaftaran: true,
+            tanggalBayarPendaftaran: tanggal + " " + bulan
         }
     })
 
@@ -94,37 +164,6 @@ route.get("/bayar/:komputerId", async (req, res)=>{
         },
         data: {
             total: y.total + 150000
-        }
-    })
-    res.redirect("/komputer")
-})
-
-route.get("/cancel/:komputerId", async (req, res)=>{
-    const {komputerId} = req.params
-    const x = await db.pesertaKomputer.update({
-        where: {
-            id: Number(komputerId)
-        },
-        data: {
-            sudahBayar: false
-        }
-    })
-
-    const y = await db.bulan.findFirst({
-        where: {
-            id: x.bulanId
-        },
-        select: {
-            total: true
-        }
-    })
-
-    await db.bulan.update({
-        where: {
-            id: x.bulanId
-        },
-        data: {
-            total: y.total - 150000
         }
     })
     res.redirect("/komputer")

@@ -19,48 +19,59 @@
         <input onchange={handleDate()} type="month" class="input" id="dateInput" value="{{tahunDanBulan}}">
     </div>
     <div class="container">
-      <div class="row d-flex justify-content-center">
+      <div class="row d-flex justify-content-center mx-1">
         {{#if tidakAda}}
         <div class="col-6 d-flex flex-column border border-dark p-3 mt-5">
           <h1>bulan ini tidak ada</h1>
         </div>
         {{else}}
-        <div class="col-6 d-flex flex-column border border-dark p-3 mt-5">
-          <h2 class="text-center">total penghasilan </h2>
-          <h5 class="text-center">{{tahunDanBulan}}</h5>
-          <table border="0" style="width: 100%;">
+        <div class="col-lg-6 d-flex flex-column border border-dark mt-5 p-0">
+          <div class="text-center bg-success text-light w-100">
+            <h2 >total penghasilan </h2>
+            <h5 >{{tahunDanBulan}}</h5>
+          </div>
+
+          <table border="0" class="w-100 m-2">
+          {{#if listBimbel}}
             <tr>
               <td class="border-bottom">
                 <b>(bimbel)</b>
               </td>
             </tr>
+          {{/if}}
           
           {{#each listBimbel}}
               <tr>
-                <td>{{this.nama}}</td>
-                <td>: 150.000</td>
+                <td>{{this.nama}} <small class="text-secondary">{{this.tanggalBayarBulanan}}</small></td>
+                <td>: 100.000</td>
               </tr>  
           {{/each}}
+
+          {{#if listKomputer}}
             <tr>
               <td class="border-bottom">
                 <b>(komputer)</b>
               </td>
             </tr>
+          {{/if}}
+
           {{#each listKomputer}}
               <tr>
-                <td>{{this.nama}}</td>
-                <td>: 150.000</td>
+                <td>{{this.nama}} <small class="text-secondary">{{this.tanggalBayarBulanan}}</small></td>
+                <td>: 100.000</td>
               </tr>  
           {{/each}}
+          {{#if listInggris}}
             <tr>
               <td class="border-bottom">
                 <b>(inggris)</b>
               </td>
             </tr>
+          {{/if}}
           {{#each listInggris}}
               <tr>
-                <td>{{this.nama}}</td>
-                <td>: 150.000</td>
+                <td>{{this.nama}} <small class="text-secondary">{{this.tanggalBayarBulanan}}</small></td>
+                <td>: 100.000</td>
               </tr>  
           {{/each}}
               <tr class="border border-secondary"></tr>

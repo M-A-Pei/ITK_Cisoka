@@ -36,25 +36,37 @@ model bulan {
 model pesertaBimbel{
   id          Int        @id @default(autoincrement())
   nama        String
-  sudahBayar  Boolean
+  sudahBayar  Boolean    @default(false)
+  pendaftaran Boolean    @default(false)
+
+  tanggalBayarBulanan     String @default("")
+  tanggalBayarPendaftaran String @default("")
 
   bulanId     Int
-  bulan       bulan     @relation(fields: [bulanId], references: [id])
+  bulan       bulan      @relation(fields: [bulanId], references: [id])
 }
 
 model pesertaInggris{
   id          Int        @id @default(autoincrement())
   nama        String
-  sudahBayar  Boolean
+  sudahBayar  Boolean    @default(false)
+  pendaftaran Boolean    @default(false)
+
+  tanggalBayarBulanan     String  @default("")
+  tanggalBayarPendaftaran String  @default("")
 
   bulanId     Int
-  bulan       bulan     @relation(fields: [bulanId], references: [id])
+  bulan       bulan      @relation(fields: [bulanId], references: [id])
 }
 
 model pesertaKomputer{
   id          Int        @id @default(autoincrement())
   nama        String
-  sudahBayar  Boolean
+  sudahBayar  Boolean    @default(false)
+  pendaftaran Boolean    @default(false)
+
+  tanggalBayarBulanan     String @default("")
+  tanggalBayarPendaftaran String @default("")
 
   bulanId     Int
   bulan       bulan     @relation(fields: [bulanId], references: [id])

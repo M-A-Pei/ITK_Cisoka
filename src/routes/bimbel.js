@@ -21,14 +21,13 @@ route.get("/:date?", async(req, res)=>{
             if(bulan < 10) bulan = "0" + bulan
             const tahunDanBulan = tahun + "-" + bulan
     
+
             res.render("bimbel", {data, tahunDanBulan, currentDate: true})
         })
     }else{
         const tahun = tanggal.split("-")[0]               //klo param tanggal ada kita render catetan sesuai dengan bulan dan tahun yang dipilih
         const bulan = BULAN[tanggal.split("-")[1]-1]
 
-
-        console.log(tahun, bulan)
         const data = await db.pesertaBimbel.findMany({
             where: {
                 bulan: {
@@ -60,8 +59,7 @@ route.post("/", async (req, res)=>{
         await db.pesertaBimbel.create({
             data: {
                 nama,
-                sudahBayar: false,
-                bulanId: value.bulan.id
+                bulanId: value.bulan.id,
             }
         })
         res.redirect("/bimbel")
@@ -70,12 +68,16 @@ route.post("/", async (req, res)=>{
 
 route.get("/bayar/:bimbelId", async (req, res)=>{
     const {bimbelId} = req.params
+    const date = new Date()
+    const tanggal = date.getDate()
+    const bulan = BULAN[date.getMonth()]
     const x = await db.pesertaBimbel.update({
         where: {
             id: Number(bimbelId)
         },
         data: {
-            sudahBayar: true
+            sudahBayar: true,
+            tanggalBayarBulanan: tanggal + " " + bulan
         }
     })
     
@@ -93,7 +95,7 @@ route.get("/bayar/:bimbelId", async (req, res)=>{
             id: x.bulanId
         },
         data: {
-            total: y.total + 150000
+            total: y.total + 100000
         }
     })
     res.redirect("/bimbel")
@@ -106,7 +108,8 @@ route.get("/cancel/:bimbelId", async (req, res)=>{
             id: Number(bimbelId)
         },
         data: {
-            sudahBayar: false
+            sudahBayar: false,
+            tanggalBayarBulanan: ""
         }
     })
 
@@ -124,7 +127,42 @@ route.get("/cancel/:bimbelId", async (req, res)=>{
             id: x.bulanId
         },
         data: {
-            total: y.total - 150000
+            total: y.total - 100000
+        }
+    })
+    res.redirect("/bimbel")
+})
+
+route.get("/pendaftaran/:bimbelId", async (req, res)=>{
+    const {bimbelId} = req.params
+    const date = new Date()
+    const tanggal = date.getDate()
+    const bulan = BULAN[date.getMonth()]
+    const x = await db.pesertaBimbel.update({
+        where: {
+            id: Number(bimbelId)
+        },
+        data: {
+            pendaftaran: true,
+            tanggalBayarPendaftaran: tanggal + " " + bulan
+        }
+    })
+
+    const y = await db.bulan.findFirst({
+        where: {
+            id: x.bulanId
+        },
+        select: {
+            total: true
+        }
+    })
+
+    await db.bulan.update({
+        where: {
+            id: x.bulanId
+        },
+        data: {
+            total: y.total + 150000
         }
     })
     res.redirect("/bimbel")

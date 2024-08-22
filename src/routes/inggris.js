@@ -60,7 +60,6 @@ route.post("/", async (req, res)=>{
         await db.pesertaInggris.create({
             data: {
                 nama,
-                sudahBayar: false,
                 bulanId: value.bulan.id
             }
         })
@@ -70,12 +69,83 @@ route.post("/", async (req, res)=>{
 
 route.get("/bayar/:inggrisId", async (req, res)=>{
     const {inggrisId} = req.params
+    const date = new Date()
+    const tanggal = date.getDate()
+    const bulan = BULAN[date.getMonth()]
     const x = await db.pesertaInggris.update({
         where: {
             id: Number(inggrisId)
         },
         data: {
-            sudahBayar: true
+            sudahBayar: true,
+            tanggalBayarBulanan: tanggal + " " + bulan
+        }
+    })
+
+    const y = await db.bulan.findFirst({
+        where: {
+            id: x.bulanId
+        },
+        select: {
+            total: true
+        }
+    })
+
+    await db.bulan.update({
+        where: {
+            id: x.bulanId
+        },
+        data: {
+            total: y.total + 100000
+        }
+    })
+    res.redirect("/inggris")
+})
+
+route.get("/cancel/:inggrisId", async (req, res)=>{
+    const {inggrisId} = req.params
+    const x = await db.pesertaInggris.update({
+        where: {
+            id: Number(inggrisId)
+        },
+        data: {
+            sudahBayar: false,
+            tanggalBayarBulanan: ""
+        }
+    })
+
+    const y = await db.bulan.findFirst({
+        where: {
+            id: x.bulanId
+        },
+        select: {
+            total: true
+        }
+    })
+
+    await db.bulan.update({
+        where: {
+            id: x.bulanId
+        },
+        data: {
+            total: y.total - 100000
+        }
+    })
+    res.redirect("/inggris")
+})
+
+route.get("/pendaftaran/:inggrisId", async (req, res)=>{
+    const {inggrisId} = req.params
+    const date = new Date()
+    const tanggal = date.getDate()
+    const bulan = BULAN[date.getMonth()]
+    const x = await db.pesertaInggris.update({
+        where: {
+            id: Number(inggrisId)
+        },
+        data: {
+            pendaftaran: true,
+            tanggalBayarPendaftaran: tanggal + " " + bulan
         }
     })
 
@@ -94,37 +164,6 @@ route.get("/bayar/:inggrisId", async (req, res)=>{
         },
         data: {
             total: y.total + 150000
-        }
-    })
-    res.redirect("/inggris")
-})
-
-route.get("/cancel/:inggrisId", async (req, res)=>{
-    const {inggrisId} = req.params
-    const x = await db.pesertaInggris.update({
-        where: {
-            id: Number(inggrisId)
-        },
-        data: {
-            sudahBayar: false
-        }
-    })
-
-    const y = await db.bulan.findFirst({
-        where: {
-            id: x.bulanId
-        },
-        select: {
-            total: true
-        }
-    })
-
-    await db.bulan.update({
-        where: {
-            id: x.bulanId
-        },
-        data: {
-            total: y.total - 150000
         }
     })
     res.redirect("/inggris")

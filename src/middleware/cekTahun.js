@@ -10,8 +10,9 @@ module.exports = async function cekTahun(){
         }
     })
     
+    let tahunBaru
     if(!cekTahun){
-        await db.tahun.create({
+        tahunBaru = await db.tahun.create({
             data: {
                 tahun: String(date.getFullYear())
             }
@@ -21,7 +22,7 @@ module.exports = async function cekTahun(){
     const cekBulan = await db.bulan.findFirst({
         where: {
             bulan: bulan[date.getMonth()],
-            tahunId: cekTahun.id
+            tahunId: cekTahun?.id || tahunBaru.id
         }
     })
 
@@ -30,7 +31,7 @@ module.exports = async function cekTahun(){
         bulanSekarang = await db.bulan.create({
             data: {
                 bulan: bulan[date.getMonth()],
-                tahunId: cekTahun.id,
+                tahunId: cekTahun?.id || tahunBaru.id,
                 total: 0,
             }
         })

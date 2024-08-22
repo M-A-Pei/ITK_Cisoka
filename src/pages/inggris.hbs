@@ -26,7 +26,7 @@
           <table class="table table-dark">
             <thead>
                 <tr>
-                    <th scope="col">Nama Peserta</th>
+                    <th scope="col">Peserta</th>
                     <th scope="col">status</th>
                     <th scope="col">action</th>
                 </tr>
@@ -41,15 +41,21 @@
                 {{#each data}}
                     {{#if this.sudahBayar}}
                         <tr class="table-success">
-                            <td>{{this.nama}}</td>
+                            <td>{{this.nama}} {{#if this.pendaftaran}}&#10004;{{/if}}</td>
                             <td>sudah bayar</td>
-                            <td><a href="inggris/cancel/{{this.id}}" class="btn btn-danger">cancel</a></td>
+                            <td>
+                                <a href="inggris/cancel/{{this.id}}" class="btn btn-warning">cancel</a>
+                                {{#unless this.pendaftaran}}<a href="inggris/pendaftaran/{{this.id}}" class="btn btn-success">Daftar</a>{{/unless}}
+                            </td>
                         </tr>
                     {{else}}
                         <tr class="table-danger">
-                            <td>{{this.nama}}</td>
+                            <td>{{this.nama}} {{#if this.pendaftaran}}&#10004;{{/if}}</td>
                             <td>belum bayar</td>
-                            <td><a href="inggris/bayar/{{this.id}}" class="btn btn-success">bayar</a></td>
+                            <td>
+                                <a href="inggris/bayar/{{this.id}}" class="btn btn-success">bayar</a>
+                                {{#unless this.pendaftaran}}<a href="inggris/pendaftaran/{{this.id}}" class="btn btn-success">Daftar</a>{{/unless}}
+                            </td>
                         </tr>
                     {{/if}}
                 {{/each}}
@@ -64,7 +70,7 @@
                 <form action="/inggris" method="POST">
                     <div class="input-group mb-3">
                         <input required type="text" name="nama" class="form-control" placeholder="Nama">
-                        <span class="input-group-text"><button type="submit" class="btn btn-warning">tambah murid baru</button></span>
+                        <span class="input-group-text"><button type="submit" class="btn btn-outline-secondary">tambah murid baru</button></span>
                     </div>
                     
                 </form>
