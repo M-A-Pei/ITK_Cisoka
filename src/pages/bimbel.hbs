@@ -64,7 +64,7 @@
                         </div>
                         <div class="modal-body">
                             {{#if this.sudahBayar}}
-                                <a href="bimbel/cancel/{{this.id}}" class="btn btn-warning m-2">Cancel Pembayaran Bulanan</a>
+                                <a href="/bimbel/cancel/{{this.id}}" class="btn btn-warning m-2">Cancel Pembayaran Bulanan</a>
                             {{else}}
                                 <a href="/bimbel/bayar/{{this.id}}" class="btn btn-success m-2">Bayar Bulanan</a>
                             {{/if}}
@@ -72,7 +72,7 @@
                             {{#if this.pendaftaran}}
                                 <a href="/bimbel/cancelPendaftaran/{{this.id}}" class="btn btn-warning m-2">Cancel Pembayaran Pendaftaran</a>
                             {{else}}
-                                <a href="bimbel/pendaftaran/{{this.id}}" class="btn btn-success m-2">Bayar Pendaftaran</a>
+                                <a href="/bimbel/pendaftaran/{{this.id}}" class="btn btn-success m-2">Bayar Pendaftaran</a>
                             {{/if}}
 
                             <a href="/bimbel/delete/{{this.id}}" class="btn btn-danger m-2">Selesai Kursus</a>

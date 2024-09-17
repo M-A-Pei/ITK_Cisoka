@@ -75,7 +75,7 @@ async function loadPage(bulan, tahun, res){
     const total = response.total
 
     const x = (listInggris.length * hargaBulanInggris) + (listBimbel.length * hargaBulanBimbel) + (listKomputer.length * hargaBulanKomputer)
-    const listPendaftaran = total - x
+    const listPendaftaran = x == 0? total : (total - x) == total? 0 : (total - x) //hitung total pendaftaran bulan ini dengan cara mengurangi total yang sudah bayar bulanan dengan total bulanan 
     res.render("bulanan", {tahunDanBulan, total, listBimbel, listInggris, listKomputer, hargaBulanBimbel, hargaBulanInggris, hargaBulanKomputer, listPendaftaran})
 }
 

@@ -104,7 +104,7 @@ route.get("/bayar/:bimbelId", async (req, res)=>{
             total: y.total + hargaBulanBimbel
         }
     })
-    res.redirect("/bimbel")
+    res.redirect(req.get('Referer'))
 })
 
 route.get("/cancel/:bimbelId", async (req, res)=>{
@@ -136,7 +136,7 @@ route.get("/cancel/:bimbelId", async (req, res)=>{
             total: y.total - hargaBulanBimbel
         }
     })
-    res.redirect("/bimbel")
+    res.redirect(req.get('Referer'))
 })
 
 route.get("/pendaftaran/:bimbelId", async (req, res)=>{
@@ -185,7 +185,7 @@ route.get("/pendaftaran/:bimbelId", async (req, res)=>{
             total: y.total + hargaDaftarBimbel
         }
     })
-    res.redirect("/bimbel")
+    res.redirect(req.get('Referer'))
 })
 
 route.get("/cancelPendaftaran/:bimbelId", async (req, res)=>{
@@ -226,17 +226,28 @@ route.get("/cancelPendaftaran/:bimbelId", async (req, res)=>{
             total: y.total - hargaDaftarBimbel
         }
     })
-    res.redirect("/bimbel")
+    res.redirect(req.get('Referer'))
 })
 
 route.get("/delete/:bimbelId", async (req, res)=>{
     const {bimbelId} = req.params
-    await db.pesertaBimbel.delete({
+    const {nama} = await db.pesertaBimbel.findFirst({
         where: {
             id: Number(bimbelId)
+        },
+        select: {
+            nama: true
         }
     })
-    res.redirect("/bimbel")
+    await db.pesertaBimbel.deleteMany({
+        where: {
+            id : {
+                gte: Number(bimbelId)
+            },
+            nama
+        }
+    })
+    res.redirect(req.get('Referer'))
 })
 
 module.exports = route
