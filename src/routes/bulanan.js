@@ -75,7 +75,7 @@ async function loadPage(bulan, tahun, res){
     const total = response.total
 
     const x = (listInggris.length * hargaBulanInggris) + (listBimbel.length * hargaBulanBimbel) + (listKomputer.length * hargaBulanKomputer)
-    const listPendaftaran = (total - x) == total? 0 : (total - x)
+    const listPendaftaran = total - x
     res.render("bulanan", {tahunDanBulan, total, listBimbel, listInggris, listKomputer, hargaBulanBimbel, hargaBulanInggris, hargaBulanKomputer, listPendaftaran})
 }
 

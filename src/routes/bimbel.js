@@ -144,9 +144,18 @@ route.get("/pendaftaran/:bimbelId", async (req, res)=>{
     const date = new Date()
     const tanggal = date.getDate()
     const bulan = BULAN[date.getMonth()]
-    const x = await db.pesertaBimbel.update({
+
+    const {nama} = await db.pesertaBimbel.findFirst({
         where: {
             id: Number(bimbelId)
+        },
+        select: {
+            nama: true
+        }
+    })
+    const x = await db.pesertaBimbel.updateMany({
+        where: {
+            nama
         },
         data: {
             pendaftaran: true,
@@ -154,21 +163,77 @@ route.get("/pendaftaran/:bimbelId", async (req, res)=>{
         }
     })
 
+    
+
     const y = await db.bulan.findFirst({
         where: {
-            id: x.bulanId
+            pesertaBimbel: {
+                some: {
+                    id: Number(bimbelId)
+                }
+            }
         },
-        select: {
-            total: true
-        }
     })
+
+    console.log(y)
 
     await db.bulan.update({
         where: {
-            id: x.bulanId
+            id: y.id
         },
         data: {
             total: y.total + hargaDaftarBimbel
+        }
+    })
+    res.redirect("/bimbel")
+})
+
+route.get("/cancelPendaftaran/:bimbelId", async (req, res)=>{
+    const {bimbelId} = req.params
+
+    const {nama} = await db.pesertaBimbel.findFirst({
+        where: {
+            id: Number(bimbelId)
+        },
+        select: {
+            nama: true
+        }
+    })
+
+    await db.pesertaBimbel.updateMany({
+        where: {
+            nama
+        },
+        data: {
+            pendaftaran: false,
+            tanggalBayarPendaftaran: ""
+        }
+    })
+    const y = await db.bulan.findFirst({
+        where: {
+            pesertaBimbel: {
+                some: {
+                    id: Number(bimbelId)
+                }
+            }
+        },
+    })
+    await db.bulan.update({
+        where: {
+            id: y.id
+        },
+        data: {
+            total: y.total - hargaDaftarBimbel
+        }
+    })
+    res.redirect("/bimbel")
+})
+
+route.get("/delete/:bimbelId", async (req, res)=>{
+    const {bimbelId} = req.params
+    await db.pesertaBimbel.delete({
+        where: {
+            id: Number(bimbelId)
         }
     })
     res.redirect("/bimbel")

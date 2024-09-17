@@ -41,6 +41,7 @@ app.listen(port, async()=>{
         console.log(`listening on port ${port}`)
     } catch (error) {
         await db.$disconnect()
+        console.log(error)
     }
     
 })

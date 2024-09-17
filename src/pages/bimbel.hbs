@@ -14,11 +14,14 @@
     </script>
   </head>
   <body>
+
    {{>navbar}}
+
     <div class="position-absolute">
         <input onchange={handleDate()} type="month" class="input" id="dateInput" value="{{tahunDanBulan}}">
     </div>
     <div class="container">
+       
       <div class="row d-flex justify-content-center">
         <div class="col-lg-7 d-flex flex-column align-items-center mt-5">
         <h1>Bimbel</h1>
@@ -39,26 +42,44 @@
                 {{/unless}}
 
                 {{#each data}}
-                    {{#if this.sudahBayar}}
-                        <tr class="table-success">
-                            <td>{{this.nama}} {{#if this.pendaftaran}}&#10004;{{/if}}</td>
-                            <td>sudah bayar</td>
-                            <td colspan="2">
-                                <a href="bimbel/cancel/{{this.id}}" class="btn btn-warning">cancel</a>
-                                {{#unless this.pendaftaran}}<a href="bimbel/pendaftaran/{{this.id}}" class="btn btn-success">Daftar</a>{{/unless}}
-                            </td>
+
+                    <tr class="{{#if this.sudahBayar}}table-success{{else}}table-danger{{/if}}">
+                        <td>{{this.nama}}  {{#if this.pendaftaran}}&#10004;{{/if}}</td>
+                        {{#if this.sudahBayar}}<td>sudah bayar</td>{{else}}<td>belum bayar</td>{{/if}}
+                        <td>
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#Modal{{this.id}}">
+                                . . .
+                            </button>
+
+                        </td>
+                    </tr>
+                    
+
+                     <!-- Modal -->
+                    <div class="modal fade" id="Modal{{this.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Pilih Aksi untuk {{this.nama}}</h5>
+                        </div>
+                        <div class="modal-body">
+                            {{#if this.sudahBayar}}
+                                <a href="bimbel/cancel/{{this.id}}" class="btn btn-warning m-2">Cancel Pembayaran Bulanan</a>
+                            {{else}}
+                                <a href="/bimbel/bayar/{{this.id}}" class="btn btn-success m-2">Bayar Bulanan</a>
+                            {{/if}}
                             
-                        </tr>
-                    {{else}}
-                        <tr class="table-danger">
-                            <td>{{this.nama}}  {{#if this.pendaftaran}}&#10004;{{/if}}</td>
-                            <td>belum bayar</td>
-                            <td>
-                                <a href="/bimbel/bayar/{{this.id}}" class="btn btn-success">Bulan</a>
-                                {{#unless this.pendaftaran}}<a href="bimbel/pendaftaran/{{this.id}}" class="btn btn-success">Daftar</a>{{/unless}}
-                            </td>
-                        </tr>
-                    {{/if}}
+                            {{#if this.pendaftaran}}
+                                <a href="/bimbel/cancelPendaftaran/{{this.id}}" class="btn btn-warning m-2">Cancel Pembayaran Pendaftaran</a>
+                            {{else}}
+                                <a href="bimbel/pendaftaran/{{this.id}}" class="btn btn-success m-2">Bayar Pendaftaran</a>
+                            {{/if}}
+
+                            <a href="/bimbel/delete/{{this.id}}" class="btn btn-danger m-2">Selesai Kursus</a>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
                 {{/each}}
             </tbody>
             </table>
