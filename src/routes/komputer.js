@@ -8,7 +8,6 @@ const route = router()
 
 route.get("/:date?", async(req, res)=>{
     const isLogin = req.session.isLogin
-    console.log(isLogin)
     if(!isLogin){
         return res.redirect("/auth/login")
     }
@@ -33,8 +32,6 @@ route.get("/:date?", async(req, res)=>{
         const tahun = tanggal.split("-")[0]
         const bulan = BULAN[tanggal.split("-")[1]-1]
 
-
-        console.log(tahun, bulan)
         const data = await db.pesertaKomputer.findMany({
             where: {
                 bulan: {
@@ -145,9 +142,18 @@ route.get("/pendaftaran/:komputerId", async (req, res)=>{
     const date = new Date()
     const tanggal = date.getDate()
     const bulan = BULAN[date.getMonth()]
-    const x = await db.pesertaKomputer.update({
+
+    const {nama} = await db.pesertaKomputer.findFirst({
         where: {
             id: Number(komputerId)
+        },
+        select: {
+            nama: true
+        }
+    })
+    const x = await db.pesertaKomputer.updateMany({
+        where: {
+            nama
         },
         data: {
             pendaftaran: true,
@@ -155,24 +161,89 @@ route.get("/pendaftaran/:komputerId", async (req, res)=>{
         }
     })
 
+    
+
     const y = await db.bulan.findFirst({
         where: {
-            id: x.bulanId
+            pesertaKomputer: {
+                some: {
+                    id: Number(komputerId)
+                }
+            }
         },
-        select: {
-            total: true
-        }
     })
 
     await db.bulan.update({
         where: {
-            id: x.bulanId
+            id: y.id
         },
         data: {
             total: y.total + hargaDaftarKomputer
         }
     })
-    res.redirect("/komputer")
+    res.redirect(req.get('Referer'))
+})
+
+route.get("/cancelPendaftaran/:komputerId", async (req, res)=>{
+    const {komputerId} = req.params
+
+    const {nama} = await db.pesertaKomputer.findFirst({
+        where: {
+            id: Number(komputerId)
+        },
+        select: {
+            nama: true
+        }
+    })
+
+    await db.pesertaKomputer.updateMany({
+        where: {
+            nama
+        },
+        data: {
+            pendaftaran: false,
+            tanggalBayarPendaftaran: ""
+        }
+    })
+    const y = await db.bulan.findFirst({
+        where: {
+            pesertaKomputer: {
+                some: {
+                    id: Number(komputerId)
+                }
+            }
+        },
+    })
+    await db.bulan.update({
+        where: {
+            id: y.id
+        },
+        data: {
+            total: y.total - hargaDaftarKomputer
+        }
+    })
+    res.redirect(req.get('Referer'))
+})
+
+route.get("/delete/:komputerId", async (req, res)=>{
+    const {komputerId} = req.params
+    const getNama = await db.pesertaKomputer.findFirst({
+        where: {
+            id: Number(komputerId)
+        },
+        select: {
+            nama: true
+        }
+    })
+    await db.pesertaKomputer.deleteMany({
+        where: {
+            id : {
+                gte: Number(komputerId)
+            },
+            nama: getNama.nama
+        }
+    })
+    res.redirect(req.get('Referer'))
 })
 
 module.exports = route

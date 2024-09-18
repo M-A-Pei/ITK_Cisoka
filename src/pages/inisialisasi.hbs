@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{title}}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/0412fad157.js" crossorigin="anonymous"></script>
+    <script>
+        const handleDate = ()=>{
+            const x = document.getElementById('dateInput').value
+            window.location.href = `/inggris/${x}`;
+        }
+
+        const handleSelesai = () => {
+            const udhselesai = document.getElementById('sudahSelesai').checked
+            var element = document.getElementById("tanggalSelesaiContainer");
+            if(udhselesai){
+                element.classList.remove("d-none");
+            }else{
+                element.classList.add("d-none");
+            }
+        }
+    </script>
+  </head>
+  <body>
+   {{>navbar}}
+
+    <div class="container">
+      <div class="row d-flex justify-content-center">
+        <div class="col-lg-7 d-flex flex-column mt-4 p-3 border">
+            <div class="align-items-center align-self-center text-center">
+                <h1 class="lh-1">inisialisasi</h1>
+                <small class="lh-1">masuki data murid lama yang belum ada dalam database</small>
+            </div>
+
+            <form action="/" method="POST" class="d-flex flex-column mt-1 gap-3">
+                <input class="form-control" type="text" placeholder="nama murid">
+                <select class="form-select" aria-label="Default select example">
+                    <option value="bimbel" selected>Peserta Bimbel</option>
+                    <option value="komputer">Peserta Komputer</option>
+                    <option value="inggris">Peserta Inggris</option>
+                </select>
+                
+                <div class="d-flex">
+                    <label style="width: 150px;">Tanggal Daftar</label>
+                    <input type="month" class="form-control" id="dateInput">
+                </div>
+
+                <div class="d-flex">
+                    <label style="width: 150px;">
+                        Sudah Selesai
+                    </label>
+                    <input class="form-check-input" onchange="handleSelesai()" value="sudahSelesai" type="checkbox" id="sudahSelesai">
+                </div>
+
+                <div class="d-flex d-none" id="tanggalSelesaiContainer">
+                    <label style="width: 150px;">Tanggal Selesai</label>
+                    <input type="month" class="form-control" id="dateInput">
+                </div>
+
+                <div class="d-flex">
+                    <label style="width: 150px;">
+                        Sudah Bayar Pendaftaran
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                </div>
+                
+                
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+      </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
+</html>

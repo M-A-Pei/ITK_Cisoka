@@ -8,7 +8,6 @@ const route = router()
 
 route.get("/:date?", async(req, res)=>{
     const isLogin = req.session.isLogin
-    console.log(isLogin)
     if(!isLogin){
         return res.redirect("/auth/login")
     }
@@ -175,8 +174,6 @@ route.get("/pendaftaran/:bimbelId", async (req, res)=>{
         },
     })
 
-    console.log(y)
-
     await db.bulan.update({
         where: {
             id: y.id
@@ -231,7 +228,7 @@ route.get("/cancelPendaftaran/:bimbelId", async (req, res)=>{
 
 route.get("/delete/:bimbelId", async (req, res)=>{
     const {bimbelId} = req.params
-    const {nama} = await db.pesertaBimbel.findFirst({
+    const getNama = await db.pesertaBimbel.findFirst({
         where: {
             id: Number(bimbelId)
         },
@@ -244,7 +241,7 @@ route.get("/delete/:bimbelId", async (req, res)=>{
             id : {
                 gte: Number(bimbelId)
             },
-            nama
+            nama: getNama.nama
         }
     })
     res.redirect(req.get('Referer'))

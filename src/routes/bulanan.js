@@ -8,7 +8,6 @@ const route = router()
 
 route.get("/:date?", async(req, res)=>{
     const isLogin = req.session.isLogin
-    console.log(isLogin)
     if(!isLogin){
         return res.redirect("/auth/login")
     }
@@ -18,7 +17,6 @@ route.get("/:date?", async(req, res)=>{
         const date = new Date()        
         const tahun = date.getFullYear()
         let bulan = (date.getMonth() + 1)
-        console.log(date.getMonth())
         if(bulan < 10) bulan = "0" + bulan
 
         await loadPage(bulan, tahun, res)
@@ -31,7 +29,6 @@ route.get("/:date?", async(req, res)=>{
 
 async function loadPage(bulan, tahun, res){
     const tahunDanBulan = tahun + "-" + bulan
-    console.log(tahunDanBulan)
     const response = await db.bulan.findFirst({
         where: {
             tahun: {
